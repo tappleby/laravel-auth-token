@@ -28,7 +28,7 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
 
     $request->shouldReceive('header')->once()->andReturnNull();
 
-    $this->setExpectedException('Tappleby\AuthToken\NotAuthorizedException');
+    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
 
     $filter = new \Tappleby\AuthToken\AuthTokenFilter($tokens, $users, $events);
     $filter->filter($route, $request);
@@ -46,7 +46,7 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
     $request->shouldReceive('header')->once()->andReturn('BAD');
     $tokens->shouldReceive('find')->once()->andReturnNull();
 
-    $this->setExpectedException('Tappleby\AuthToken\NotAuthorizedException');
+    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
 
     $filter = new \Tappleby\AuthToken\AuthTokenFilter($tokens, $users, $events);
     $filter->filter($route, $request);
@@ -64,7 +64,7 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
     $tokens->shouldReceive('find')->once()->andReturn( new \Tappleby\AuthToken\AuthToken(1, 'public', 'private') );
     $users->shouldReceive('retrieveByID')->once()->andReturnNull();
 
-    $this->setExpectedException('Tappleby\AuthToken\NotAuthorizedException');
+    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
 
     $filter = new \Tappleby\AuthToken\AuthTokenFilter($tokens, $users, $events);
     $filter->filter($route, $request);

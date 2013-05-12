@@ -10,16 +10,7 @@ namespace Tappleby\AuthToken;
 
 use Illuminate\Auth\UserProviderInterface;
 use Illuminate\Events\Dispatcher;
-
-class NotAuthorizedException extends \Exception {
-  public function __construct($message = "Not Authorized", $code = 401, Exception $previous = null)
-  {
-    parent::__construct($message, $code, $previous);
-  }
-
-}
-
-
+use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
 
 class AuthTokenFilter {
 
