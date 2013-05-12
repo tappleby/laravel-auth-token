@@ -14,8 +14,9 @@ class AuthTokenManager extends Manager {
 
   protected function createDatabaseDriver() {
     $provider = $this->createDatabaseProvider();
+    $users = $this->app['auth']->driver()->getProvider();
 
-    return new AuthTokenGuard($provider);
+    return new AuthTokenDriver($provider, $users);
   }
 
   protected function createDatabaseProvider() {

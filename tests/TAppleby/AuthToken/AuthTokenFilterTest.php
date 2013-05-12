@@ -18,7 +18,44 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
     m::mock('Illuminate\Auth\UserInterface');
   }
 
-  public function testFilterExceptionMissingToken() {
+  public function testFilterValidEventNotFired() {
+    $driver = m::mock('Tappleby\AuthToken\AuthTokenDriver');
+    $events = m::mock('Illuminate\Events\Dispatcher');
+    $route = m::mock('Illuminate\Routing\Route');
+    $request = m::mock('Illuminate\Http\Request');
+
+
+    $request->shouldReceive('header')->once()->andReturnNull();
+    $driver->shouldReceive('validate')->andThrow('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
+
+    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
+
+    $filter = new \Tappleby\AuthToken\AuthTokenFilter($driver, $events);
+    $filter->filter($route, $request);
+
+  }
+
+  public function testFilterValidEventFired() {
+    $driver = m::mock('Tappleby\AuthToken\AuthTokenDriver');
+    $events = m::mock('Illuminate\Events\Dispatcher');
+    $route = m::mock('Illuminate\Routing\Route');
+    $request = m::mock('Illuminate\Http\Request');
+
+
+    $request->shouldReceive('header')->once()->andReturnNull();
+
+    $user = m::mock('StdClass');
+    $driver->shouldReceive('validate')->andReturn($user);
+
+    $events->shouldReceive('fire')->once()->with('auth.token.valid', $user);
+
+    $filter = new \Tappleby\AuthToken\AuthTokenFilter($driver, $events);
+    $filter->filter($route, $request);
+  }
+
+
+
+  /*public function testFilterExceptionMissingToken() {
     $tokens = m::mock('Tappleby\AuthToken\AuthTokenProviderInterface');
     $users = m::mock('Illuminate\Auth\UserProviderInterface');
     $events = m::mock('Illuminate\Events\Dispatcher');
@@ -26,7 +63,7 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
     $request = m::mock('Illuminate\Http\Request');
 
 
-    $request->shouldReceive('header')->once()->andReturnNull();
+
 
     $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
 
@@ -88,6 +125,6 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
 
     $filter = new \Tappleby\AuthToken\AuthTokenFilter($tokens, $users, $events);
     $filter->filter($route, $request);
-  }
+  }  */
 
 }

@@ -8,20 +8,21 @@
 namespace Tappleby\AuthToken;
 
 
-class AuthTokenController {
-  /**
-   * @var \Tappleby\AuthToken\AuthTokenProviderInterface
-   */
-  protected $tokens;
+use Illuminate\Routing\Controllers\Controller;
+
+class AuthTokenController extends Controller {
 
   /**
-   * @var \Illuminate\Auth\UserProviderInterface
+   * @var \Tappleby\AuthToken\AuthTokenDriver
    */
-  protected $users;
+  protected $driver;
 
-  function __construct(AuthTokenProviderInterface $tokenProvider, UserProviderInterface $userProvider)
+  function __construct(AuthTokenDriver $driver)
   {
-    $this->tokens = $tokenProvider;
-    $this->users = $userProvider;
+    $this->driver = $driver;
+  }
+
+  public function index() {
+
   }
 }

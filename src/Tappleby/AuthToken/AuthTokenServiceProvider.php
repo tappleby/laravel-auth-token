@@ -23,18 +23,16 @@ class AuthTokenServiceProvider extends ServiceProvider {
     });
 
     $this->app['tappleby.auth.token.filter'] = $this->app->share(function($app) {
-      $tokens = $app['tappleby.auth.token']->driver()->getProvider();
-      $users = $app['auth']->driver()->getProvider();
+      $driver = $app['tappleby.auth.token']->driver();
       $events = $app['events'];
 
-      return new AuthTokenFilter($tokens, $users, $events);
+      return new AuthTokenFilter($driver, $events);
     });
 
     $this->app['tappleby.auth.token.controller'] = $this->app->share(function($app) {
-      $tokens = $app['tappleby.auth.token']->driver()->getProvider();
-      $users = $app['auth']->driver()->getProvider();
+      $driver = $app['tappleby.auth.token']->driver();
 
-      return new AuthTokenController($tokens, $users);
+      return new AuthTokenController($driver);
     });
 
     $this->app['router']->addFilter('auth.token', 'tappleby.auth.token.filter');

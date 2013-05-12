@@ -19,10 +19,7 @@ class AuthTokenFilter {
    */
   protected $tokens;
 
-  /**
-   * @var \Illuminate\Auth\UserProviderInterface
-   */
-  protected $users;
+
 
   /**
    * The event dispatcher instance.
@@ -31,34 +28,17 @@ class AuthTokenFilter {
    */
   protected $events;
 
-  function __construct(AuthTokenProviderInterface $tokenProvider, UserProviderInterface $userProvider, Dispatcher $events)
+  protected $driver;
+
+  function __construct(AuthTokenDriver $driver, Dispatcher $events)
   {
-    $this->tokens = $tokenProvider;
-    $this->users = $userProvider;
+    $this->driver = $driver;
     $this->events = $events;
   }
 
   function filter($route, $request) {
-
-
     $payload = $request->header('X-Auth-Token');
-
-    if($payload == null) {
-      throw new NotAuthorizedException();
-    }
-
-    $tokenResponse = $this->tokens->find($payload);
-
-    if($tokenResponse == null) {
-      throw new NotAuthorizedException();
-    }
-
-    $user = $this->users->retrieveByID( $tokenResponse->getAuthIdentifier() );
-
-    if($user == null) {
-      throw new NotAuthorizedException();
-    }
-
+    $user = $this->driver->validate($payload);
     $this->events->fire('auth.token.valid', $user);
   }
 }
