@@ -7,6 +7,7 @@
 
 namespace Tappleby\AuthToken;
 
+use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\UserProviderInterface;
 use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
 
@@ -35,6 +36,8 @@ class AuthTokenDriver {
     return $this->tokens;
   }
 
+
+
   public function validate($authTokenPayload) {
 
     if($authTokenPayload == null) {
@@ -54,5 +57,15 @@ class AuthTokenDriver {
     }
 
     return $user;
+  }
+
+  public function attempt(array $credentials) {
+    $user = $this->users->retrieveByCredentials($credentials);
+
+    if($user instanceof UserInterface && $this->users->validateCredentials($user, $credentials)) {
+      return $this->tokens->create($user);
+    }
+
+    return false;
   }
 }
