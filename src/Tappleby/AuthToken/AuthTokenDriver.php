@@ -76,13 +76,21 @@ class AuthTokenDriver {
     $user = $this->users->retrieveByCredentials($credentials);
 
     if($user instanceof UserInterface && $this->users->validateCredentials($user, $credentials)) {
-
-      $this->tokens->purge($user);
-
-      return $this->tokens->create($user);
+       return $this->create($user);
     }
 
     return false;
+  }
+
+  /**
+   * Create auth token for user.
+   *
+   * @param UserInterface $user
+   * @return bool|AuthToken
+   */
+  public function create(UserInterface $user) {
+    $this->tokens->purge($user);
+    return $this->tokens->create($user);
   }
 
   /**
@@ -93,5 +101,15 @@ class AuthTokenDriver {
    */
   public function user(AuthToken $token) {
     return $this->users->retrieveByID( $token->getAuthIdentifier() );
+  }
+
+  /**
+   * Serialize token for public use.
+   *
+   * @param AuthToken $token
+   * @return string
+   */
+  public function publicToken(AuthToken $token) {
+    return $this->tokens->serializeToken($token);
   }
 }
