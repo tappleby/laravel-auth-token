@@ -33,6 +33,20 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
     $this->conn = $conn;
   }
 
+  /**
+   * @return \Illuminate\Database\Connection
+   */
+  public function getConnection()
+  {
+    return $this->conn;
+  }
+
+  /**
+   * @return \Illuminate\Database\Query\Builder
+   */
+  protected function db() {
+    return $this->conn->table($this->table);
+  }
 
   /**
    * Creates an auth token for user.
@@ -54,7 +68,7 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
        'created_at' => $t, 'updated_at' => $t
     ));
 
-    $this->conn->table($this->table)->insert($insertData);
+    $this->db()->insert($insertData);
 
     return $token;
   }
@@ -77,8 +91,7 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
       return null;
     }
 
-    $res = $this->conn
-                ->table($this->table)
+    $res = $this->db()
                 ->where('auth_identifier', $authToken->getAuthIdentifier())
                 ->where('public_key', $authToken->getPublicKey())
                 ->where('private_key', $authToken->getPrivateKey())
@@ -92,10 +105,17 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
   }
 
   /**
-   * @return \Illuminate\Database\Connection
+   * @param mixed|\Illuminate\Auth\UserInterface $identifier
+   * @return bool
    */
-  public function getConnection()
+  public function purge($identifier)
   {
-    return $this->conn;
+    if($identifier instanceof UserInterface) {
+      $identifier = $identifier->getAuthIdentifier();
+    }
+
+    $res = $this->db()->where('auth_identifier', $identifier)->delete();
+
+    return $res > 0;
   }
 }

@@ -51,4 +51,10 @@ interface AuthTokenProviderInterface {
    * @return AuthToken
    */
   public function deserializeToken($payload);
+
+  /**
+   * @param mixed|\Illuminate\Auth\UserInterface $identifier
+   * @return bool
+   */
+  public function purge($identifier);
 }

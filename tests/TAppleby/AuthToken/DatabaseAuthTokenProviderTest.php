@@ -156,4 +156,40 @@ class DatabaseAuthTokenProviderTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals( $mockData->public, $token->getPublicKey() );
     $this->assertEquals( $mockData->private, $token->getPrivateKey() );
   }
+
+  public function testPurgeGetsIdentifierFromUser() {
+    $enc =  m::mock('Illuminate\Encryption\Encrypter');
+    $user = m::mock('Illuminate\Auth\UserInterface');
+    $user->shouldReceive('getAuthIdentifier')->once()->andReturn(1);
+
+    $provider = $this->getProvider( $enc );
+
+    $provider->getConnection()->shouldReceive('table')->once()->with('table')->andReturn($query = m::mock('StdClass'));
+    $query->shouldReceive('where')->once()->with('auth_identifier', 1)->andReturn($query);
+    $query->shouldReceive('delete')->once()->andReturn(0);
+
+    $provider->purge( $user );
+  }
+
+  public function testPurgeReturnsFalseWhenNoTokensDeleted() {
+    $enc =  m::mock('Illuminate\Encryption\Encrypter');
+    $provider = $this->getProvider( $enc );
+
+    $provider->getConnection()->shouldReceive('table')->once()->with('table')->andReturn($query = m::mock('StdClass'));
+    $query->shouldReceive('where')->once()->with('auth_identifier', 1)->andReturn($query);
+    $query->shouldReceive('delete')->once()->andReturn(0);
+
+    $this->assertFalse( $provider->purge(1) );
+  }
+
+  public function testPurgeReturnsTrueWhenTokensDeleted() {
+    $enc =  m::mock('Illuminate\Encryption\Encrypter');
+    $provider = $this->getProvider( $enc );
+
+    $provider->getConnection()->shouldReceive('table')->once()->with('table')->andReturn($query = m::mock('StdClass'));
+    $query->shouldReceive('where')->once()->with('auth_identifier', 1)->andReturn($query);
+    $query->shouldReceive('delete')->once()->andReturn(5);
+
+    $this->assertTrue( $provider->purge(1) );
+  }
 }
