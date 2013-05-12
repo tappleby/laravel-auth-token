@@ -76,6 +76,9 @@ class AuthTokenDriver {
     $user = $this->users->retrieveByCredentials($credentials);
 
     if($user instanceof UserInterface && $this->users->validateCredentials($user, $credentials)) {
+
+      $this->tokens->purge($user);
+
       return $this->tokens->create($user);
     }
 
