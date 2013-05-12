@@ -13,15 +13,11 @@ class CreateAuthTokenTable extends Migration {
 	{
     Schema::create('ta_auth_tokens', function($table)
     {
-      /*                ->where('auth_identifier', $authToken->getAuthIdentifier())
-                ->where('public_key', $authToken->getPublicKey())
-                ->where('private_key', $authToken->getPrivateKey())*/
-
-      $table->increments('id');
       $table->integer('auth_identifier');
       $table->string('public_key', 96);
       $table->string('private_key', 96);
       $table->timestamps();
+      $table->primary(array('auth_identifier', 'public_key', 'private_key'));
     });
 	}
 

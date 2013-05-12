@@ -7,6 +7,7 @@
 
 namespace Tappleby\AuthToken;
 
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\Controller;
 use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
 
@@ -22,9 +23,13 @@ class AuthTokenController extends Controller {
     $this->driver = $driver;
   }
 
+  protected function getAuthToken() {
+    return \Request::header('X-Auth-Token');
+  }
+
   public function index() {
 
-    $payload = \Request::header('X-Auth-Token');
+    $payload = $this->getAuthToken();
     $user = $this->driver->validate($payload);
 
     if(!$user) {
@@ -40,14 +45,14 @@ class AuthTokenController extends Controller {
 
     $validator = \Validator::make(
       $input,
-      array('email' => array('required'), 'password' => array('required'))
+      array('username' => array('required'), 'password' => array('required'))
     );
 
     if($validator->fails()) {
       throw new NotAuthorizedException();
     }
 
-    $token = $this->driver->attempt(array('email' => $input['email'], 'password' => $input['password']));
+    $token = $this->driver->attempt(array('email' => $input['username'], 'password' => $input['password']));
 
     if(!$token) {
       throw new NotAuthorizedException();
@@ -61,6 +66,15 @@ class AuthTokenController extends Controller {
   }
 
   public function destroy() {
+    $payload = $this->getAuthToken();
+    $user = $this->driver->validate($payload);
 
+    if(!$user) {
+      throw new NotAuthorizedException();
+    }
+
+    $this->driver->getProvider()->purge($user);
+
+    return \Response::json(array('success' => true));
   }
 }
