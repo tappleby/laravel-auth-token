@@ -12,4 +12,10 @@ use Illuminate\Support\Facades\Facade;
 
 class AuthTokenController extends Facade {
   protected static function getFacadeAccessor() { return 'tappleby.auth.token.controller'; }
+
+  public function callAction($container, $router, $method, $parameters)
+  {
+    $instance = static::resolveFacadeInstance(static::getFacadeAccessor());
+    return $instance->callAction($container, $router, $method, $parameters);
+  }
 }

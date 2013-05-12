@@ -8,7 +8,10 @@
 namespace Tappleby\AuthToken;
 
 
+use Illuminate\Auth\GenericUser;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controllers\Controller;
+use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
 
 class AuthTokenController extends Controller {
 
@@ -24,5 +27,33 @@ class AuthTokenController extends Controller {
 
   public function index() {
 
+    $payload = \Request::header('X-Auth-Token');
+    $user = $this->driver->validate($payload);
+
+    return \Response::json($user);
+  }
+
+  public function save() {
+
+    $input = \Input::all();
+
+    $validator = \Validator::make(
+      $input,
+      array('email' => array('required'), 'password' => array('required'))
+    );
+
+    if($validator->fails()) {
+      throw new NotAuthorizedException();
+    }
+
+    $token = $this->driver->attempt(array('email' => $input['email'], 'password' => $input['password']));
+
+    if(!$token) {
+      throw new NotAuthorizedException();
+    }
+
+    $serializedToken = $this->driver->getProvider()->serializeToken($token);
+
+    return \Response::json($serializedToken);
   }
 }
