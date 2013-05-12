@@ -34,7 +34,7 @@ class AuthTokenController extends Controller {
     return \Response::json($user);
   }
 
-  public function save() {
+  public function store() {
 
     $input = \Input::all();
 
@@ -55,6 +55,12 @@ class AuthTokenController extends Controller {
 
     $serializedToken = $this->driver->getProvider()->serializeToken($token);
 
-    return \Response::json($serializedToken);
+    $user = $this->driver->user($token);
+
+    return \Response::json(array('token' => $serializedToken, 'user' => $user->toArray()));
+  }
+
+  public function destroy() {
+
   }
 }
