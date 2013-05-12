@@ -18,31 +18,28 @@ class AuthTokenDriverTest extends PHPUnit_Framework_TestCase {
     m::mock('Illuminate\Auth\UserInterface');
   }
 
-  public function testValidateExceptionNullToken() {
+  public function testValidateReturnsFalseNullToken() {
     $tokens = m::mock('Tappleby\AuthToken\AuthTokenProviderInterface');
     $users = m::mock('Illuminate\Auth\UserProviderInterface');
 
-
-    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
-
     $driver = new \Tappleby\AuthToken\AuthTokenDriver($tokens, $users);
-    $driver->validate(null);
 
+
+    $this->assertFalse( $driver->validate(null) );
   }
 
-  public function testValidateExceptionInvalidToken() {
+  public function testValidateReturnsFalseInvalidToken() {
     $tokens = m::mock('Tappleby\AuthToken\AuthTokenProviderInterface');
     $users = m::mock('Illuminate\Auth\UserProviderInterface');
 
     $tokens->shouldReceive('find')->once()->andReturnNull();
 
-    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
-
     $driver = new \Tappleby\AuthToken\AuthTokenDriver($tokens, $users);
-    $driver->validate('bad_token');
+
+    $this->assertFalse( $driver->validate('bad_token') );
   }
 
-  public function testFilterExceptionValidTokenMissingUser() {
+  public function testFilterReturnsFalseValidTokenMissingUser() {
     $tokens = m::mock('Tappleby\AuthToken\AuthTokenProviderInterface');
     $users = m::mock('Illuminate\Auth\UserProviderInterface');
 
@@ -50,10 +47,11 @@ class AuthTokenDriverTest extends PHPUnit_Framework_TestCase {
     $tokens->shouldReceive('find')->once()->andReturn( new \Tappleby\AuthToken\AuthToken(1, 'public', 'private') );
     $users->shouldReceive('retrieveByID')->once()->andReturnNull();
 
-    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
+//    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
 
     $driver = new \Tappleby\AuthToken\AuthTokenDriver($tokens, $users);
-    $driver->validate('good_token');
+
+    $this->assertFalse( $driver->validate('good_token') );
   }
 
   public function testValidateReturnsUsers() {

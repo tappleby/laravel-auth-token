@@ -18,7 +18,7 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
     m::mock('Illuminate\Auth\UserInterface');
   }
 
-  public function testFilterValidEventNotFired() {
+  public function testFilterValidateFailsFiresNotAuthorizedException() {
     $driver = m::mock('Tappleby\AuthToken\AuthTokenDriver');
     $events = m::mock('Illuminate\Events\Dispatcher');
     $route = m::mock('Illuminate\Routing\Route');
@@ -26,7 +26,7 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
 
 
     $request->shouldReceive('header')->once()->andReturnNull();
-    $driver->shouldReceive('validate')->andThrow('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
+    $driver->shouldReceive('validate')->andReturn(false);
 
     $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
 

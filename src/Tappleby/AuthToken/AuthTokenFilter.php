@@ -8,18 +8,10 @@
 namespace Tappleby\AuthToken;
 
 
-use Illuminate\Auth\UserProviderInterface;
 use Illuminate\Events\Dispatcher;
 use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
 
 class AuthTokenFilter {
-
-  /**
-   * @var \Tappleby\AuthToken\AuthTokenProviderInterface
-   */
-  protected $tokens;
-
-
 
   /**
    * The event dispatcher instance.
@@ -28,6 +20,9 @@ class AuthTokenFilter {
    */
   protected $events;
 
+  /**
+   * @var \Tappleby\AuthToken\AuthTokenDriver
+   */
   protected $driver;
 
   function __construct(AuthTokenDriver $driver, Dispatcher $events)
@@ -39,6 +34,11 @@ class AuthTokenFilter {
   function filter($route, $request) {
     $payload = $request->header('X-Auth-Token');
     $user = $this->driver->validate($payload);
+
+    if(!$user) {
+      throw new NotAuthorizedException();
+    }
+
     $this->events->fire('auth.token.valid', $user);
   }
 }

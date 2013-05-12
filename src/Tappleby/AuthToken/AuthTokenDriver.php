@@ -29,6 +29,8 @@ class AuthTokenDriver {
   }
 
   /**
+   * Returns the AuthTokenInterface provider.
+   *
    * @return \Tappleby\AuthToken\AuthTokenProviderInterface
    */
   public function getProvider()
@@ -37,28 +39,39 @@ class AuthTokenDriver {
   }
 
 
-
+  /**
+   * Validates a public auth token. Returns User object on success, otherwise false.
+   *
+   * @param $authTokenPayload
+   * @return bool|UserInterface
+   */
   public function validate($authTokenPayload) {
 
     if($authTokenPayload == null) {
-      throw new NotAuthorizedException();
+      return false;
     }
 
     $tokenResponse = $this->tokens->find($authTokenPayload);
 
     if($tokenResponse == null) {
-      throw new NotAuthorizedException();
+      return false;
     }
 
     $user = $this->users->retrieveByID( $tokenResponse->getAuthIdentifier() );
 
     if($user == null) {
-      throw new NotAuthorizedException();
+      return false;
     }
 
     return $user;
   }
 
+  /**
+   * Attempt to create an AuthToken from user credentials.
+   *
+   * @param array $credentials
+   * @return bool|AuthToken
+   */
   public function attempt(array $credentials) {
     $user = $this->users->retrieveByCredentials($credentials);
 
