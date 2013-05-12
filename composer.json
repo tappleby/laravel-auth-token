@@ -19,7 +19,8 @@
 
     "autoload": {
         "psr-0": {
-            "Tappleby\\AuthToken": "src/"
+            "Tappleby\\AuthToken": "src/",
+            "Tappleby\\Support": "src/"
         }
     },
     "minimum-stability": "dev"
