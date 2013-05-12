@@ -45,7 +45,7 @@ class AuthTokenServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('tappleby.auth.token');
+		return array('tappleby.auth.token', 'tappleby.auth.token.filter', 'tappleby.auth.token.controller');
 	}
 
 }
