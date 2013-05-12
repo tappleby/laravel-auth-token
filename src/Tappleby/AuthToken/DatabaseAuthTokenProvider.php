@@ -49,7 +49,12 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
     $token = $this->generateAuthToken();
     $token->setAuthIdentifier( $user->getAuthIdentifier() );
 
-    $this->conn->table($this->table)->insert($token->toArray());
+    $t = new \DateTime;
+    $insertData = array_merge($token->toArray(), array(
+       'created_at' => $t, 'updated_at' => $t
+    ));
+
+    $this->conn->table($this->table)->insert($insertData);
 
     return $token;
   }
@@ -78,8 +83,6 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
                 ->where('public_key', $authToken->getPublicKey())
                 ->where('private_key', $authToken->getPrivateKey())
                 ->first();
-
-
 
     if($res == null) {
       return null;
