@@ -81,4 +81,14 @@ class AuthTokenDriver {
 
     return false;
   }
+
+  /**
+   * Retrive user from auth token.
+   *
+   * @param AuthToken $token
+   * @return UserInterface|null
+   */
+  public function user(AuthToken $token) {
+    return $this->users->retrieveByID( $token->getAuthIdentifier() );
+  }
 }

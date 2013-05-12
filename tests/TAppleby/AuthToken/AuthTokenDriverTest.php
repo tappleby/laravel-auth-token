@@ -43,11 +43,8 @@ class AuthTokenDriverTest extends PHPUnit_Framework_TestCase {
     $tokens = m::mock('Tappleby\AuthToken\AuthTokenProviderInterface');
     $users = m::mock('Illuminate\Auth\UserProviderInterface');
 
-
     $tokens->shouldReceive('find')->once()->andReturn( new \Tappleby\AuthToken\AuthToken(1, 'public', 'private') );
     $users->shouldReceive('retrieveByID')->once()->andReturnNull();
-
-//    $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
 
     $driver = new \Tappleby\AuthToken\AuthTokenDriver($tokens, $users);
 
@@ -70,4 +67,18 @@ class AuthTokenDriverTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($user, $u);
   }
 
+  public function testUserFromAuthToken() {
+    $tokens = m::mock('Tappleby\AuthToken\AuthTokenProviderInterface');
+    $users = m::mock('Illuminate\Auth\UserProviderInterface');
+    $authToken = m::mock('Tappleby\AuthToken\AuthToken');
+
+    $user = m::mock('StdClass');
+    $users->shouldReceive('retrieveByID')->once()->andReturn( $user );
+    $authToken->shouldReceive('getAuthIdentifier')->once()->andReturn(1);
+
+    $driver = new \Tappleby\AuthToken\AuthTokenDriver($tokens, $users);
+    $u = $driver->user( $authToken );
+
+    $this->assertEquals($user, $u);
+  }
 }
