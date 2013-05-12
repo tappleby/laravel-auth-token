@@ -1,3 +1,4 @@
-# Laravel Auth token
+[![Build Status](https://travis-ci.org/tappleby/laravel-auth-token.png?branch=master)](https://travis-ci.org/tappleby/laravel-auth-token)
 
-WIP. 
+# Laravel 4 Auth token
+
