@@ -35,7 +35,7 @@ class AuthTokenServiceProvider extends ServiceProvider {
       return new AuthTokenController($driver);
     });
 
-    $this->app['router']->addFilter('auth.token', 'tappleby.auth.token.filter');
+    $this->app['router']->filter('auth.token', 'tappleby.auth.token.filter');
 	}
 
 	/**
