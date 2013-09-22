@@ -26,6 +26,8 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
 
 
     $request->shouldReceive('header')->once()->andReturnNull();
+	  $request->shouldReceive('input')->once()->andReturnNull();
+
     $driver->shouldReceive('validate')->andReturn(false);
 
     $this->setExpectedException('Tappleby\AuthToken\Exceptions\NotAuthorizedException');
@@ -43,6 +45,7 @@ class AuthTokenFilterTest extends PHPUnit_Framework_TestCase {
 
 
     $request->shouldReceive('header')->once()->andReturnNull();
+	  $request->shouldReceive('input')->once()->andReturnNull();
 
     $user = m::mock('StdClass');
     $driver->shouldReceive('validate')->andReturn($user);

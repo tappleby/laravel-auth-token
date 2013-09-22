@@ -32,7 +32,12 @@ class AuthTokenFilter {
   }
 
   function filter($route, $request) {
-    $payload = $request->header('X-Auth-Token');
+	  $payload = $request->header('X-Auth-Token');
+
+	  if(empty($payload)) {
+		  $payload = $request->input('auth_token');
+	  }
+
     $user = $this->driver->validate($payload);
 
     if(!$user) {

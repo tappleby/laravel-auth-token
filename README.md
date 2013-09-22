@@ -26,10 +26,16 @@ A default controller is provided to grant, check and revoke tokens. Add the foll
 	Route::post('auth', 'AuthTokenController@store');
 	Route::delete('auth', 'AuthTokenController@destroy');
 
+##### Request parameters
+
+All request must include one of:
+
+1. `X-Auth-Token` header.
+2. `auth_token` field.
 
 ##### `GET` Index action
 
-Returns current user as json. Requires the `X-Auth-Token` header to be present. On Fail throws `NotAuthorizedException`.   
+Returns current user as json. Requires auth token parameter to be present. On Fail throws `NotAuthorizedException`.   
 
 ##### `POST` Store action
 
@@ -37,13 +43,13 @@ Required input `username` and `password`. On success returns json object contain
 
 ##### `DELETE` Destroy action
 
-Purges the users tokens. Requires the `X-Auth-Token` header to be present. On Fail throws `NotAuthorizedException`.
+Purges the users tokens. Requires auth token parameter to be present. On Fail throws `NotAuthorizedException`.
 
 `NotAuthorizedException` has a `401` error code by default.
     
 ### Route Filter
 
-An `auth.token` route filter gets registered by the service provider. To protect a resource just register a before filter. Filter will throw an `NotAuthorizedException` if `X-Auth-Token` is invalid or not present.
+An `auth.token` route filter gets registered by the service provider. To protect a resource just register a before filter. Filter will throw an `NotAuthorizedException` if a valid auth token is invalid or missing.
 
 	Route::group(array('prefix' => 'api', 'before' => 'auth.token'), function() {
 	  Route::get('/', function() {
