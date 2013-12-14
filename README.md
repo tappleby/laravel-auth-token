@@ -10,7 +10,7 @@ Upgrading to Laravel 4.1?, see the [breaking changes](#changes)
 
 ### Setup
 
-Add the pacakge to your `composer.json`
+Add the package to your `composer.json`
 
     "require": {
 		...
@@ -77,7 +77,7 @@ The route filter will trigger `auth.token.valid` with the authorized user when a
     
 ### Handling the NotAuthorizedException
 
-Optionalliy register the `NotAuthorizedException` as alias eg. `AuthTokenNotAuthorizedException`
+Optionally register the `NotAuthorizedException` as alias eg. `AuthTokenNotAuthorizedException`
 
 	App::error(function(AuthTokenNotAuthorizedException $exception) {
 	  if(Request::ajax()) {
