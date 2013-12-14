@@ -2,7 +2,8 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class AuthTokenServiceProvider extends ServiceProvider {
+class AuthTokenServiceProvider extends ServiceProvider
+{
 
 	/**
 	 * Indicates if loading of the provider is deferred.
@@ -11,6 +12,13 @@ class AuthTokenServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
+	public function boot()
+	{
+		$this->package('tappleby/laravel-auth-token');
+		$this->app['router']->filter('auth.token', 'tappleby.auth.token.filter');
+	}
+
+
 	/**
 	 * Register the service provider.
 	 *
@@ -18,24 +26,23 @@ class AuthTokenServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-    $this->app['tappleby.auth.token'] = $this->app->share(function($app) {
-      return new AuthTokenManager($app);
-    });
+		$app = $this->app;
 
-    $this->app['tappleby.auth.token.filter'] = $this->app->share(function($app) {
-      $driver = $app['tappleby.auth.token']->driver();
+		$app->bindShared('tappleby.auth.token', function ($app) {
+			return new AuthTokenManager($app);
+		});
+
+		$app->bindShared('tappleby.auth.token.filter', function ($app) {
+			$driver = $app['tappleby.auth.token']->driver();
       $events = $app['events'];
 
       return new AuthTokenFilter($driver, $events);
-    });
+		});
 
-    $this->app['tappleby.auth.token.controller'] = $this->app->share(function($app) {
-      $driver = $app['tappleby.auth.token']->driver();
-
+		$app->bind('Tappleby\AuthToken\AuthTokenController', function ($app) {
+			$driver = $app['tappleby.auth.token']->driver();
       return new AuthTokenController($driver);
-    });
-
-    $this->app['router']->filter('auth.token', 'tappleby.auth.token.filter');
+		});
 	}
 
 	/**
@@ -45,7 +52,7 @@ class AuthTokenServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('tappleby.auth.token', 'tappleby.auth.token.filter', 'tappleby.auth.token.controller');
+		return array('tappleby.auth.token', 'tappleby.auth.token.filter');
 	}
 
 }
