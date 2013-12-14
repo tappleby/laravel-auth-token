@@ -7,8 +7,7 @@
 
 namespace Tappleby\AuthToken;
 
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
 
 class AuthTokenController extends Controller {
