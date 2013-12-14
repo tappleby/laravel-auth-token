@@ -8,6 +8,13 @@ Hoooks into the laravel auth module and provides an auth token upon success. Thi
 
 ### Setup
 
+Add the pacakge to your `composer.json`
+
+    "require": {
+		...
+        "tappleby/laravel-auth-token": "0.1.X"
+    }
+
 Add the service provider to `app/config/app.php`
 
 	'Tappleby\AuthToken\AuthTokenServiceProvider',
