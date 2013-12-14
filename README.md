@@ -1,6 +1,6 @@
 # Laravel 4 Auth token
 
-Hoooks into the laravel auth module and provides an auth token upon success. This token is really only secure in https environment. This main purpose for this module was to provide an auth token to javascript web app which could be used to identify users on api calls.
+Hooks into the laravel auth module and provides an auth token upon success. This token is really only secure in https environment. This main purpose for this module was to provide an auth token to javascript web app which could be used to identify users on api calls.
 
 [![Build Status](https://travis-ci.org/tappleby/laravel-auth-token.png?branch=master)](https://travis-ci.org/tappleby/laravel-auth-token)
 
