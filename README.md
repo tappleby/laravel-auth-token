@@ -4,6 +4,8 @@ Hooks into the laravel auth module and provides an auth token upon success. This
 
 [![Build Status](https://travis-ci.org/tappleby/laravel-auth-token.png?branch=master)](https://travis-ci.org/tappleby/laravel-auth-token)
 
+Upgrading to Laravel 4.1?, see the [breaking changes](#changes) 
+
 ## Getting Started
 
 ### Setup
@@ -12,7 +14,7 @@ Add the pacakge to your `composer.json`
 
     "require": {
 		...
-        "tappleby/laravel-auth-token": "0.1.X"
+        "tappleby/laravel-auth-token": "0.2.X"
     }
 
 Add the service provider to `app/config/app.php`
@@ -22,16 +24,15 @@ Add the service provider to `app/config/app.php`
 Setup the optional aliases in `app/config/app.php`
 
 	'AuthToken' => 'Tappleby\Support\Facades\AuthToken',
-    'AuthTokenController' => 'Tappleby\Support\Facades\AuthTokenController',
     'AuthTokenNotAuthorizedException' => 'Tappleby\AuthToken\Exceptions\NotAuthorizedException'
 
 ### The controller
 
 A default controller is provided to grant, check and revoke tokens. Add the following to `app/routes.php`
 
-	Route::get('auth', 'AuthTokenController@index');
-	Route::post('auth', 'AuthTokenController@store');
-	Route::delete('auth', 'AuthTokenController@destroy');
+	Route::get('auth', 'Tappleby\AuthToken\AuthTokenController@index');
+	Route::post('auth', 'Tappleby\AuthToken\AuthTokenController@store');
+	Route::delete('auth', 'Tappleby\AuthToken\AuthTokenController@destroy');
 
 ##### Request parameters
 
@@ -96,6 +97,14 @@ Some apps might already be using the traditional laravel based auth. The followi
 	}
 	
 The `AuthToken::publicToken` method prepares the auth token to be sent to the browser.
+
+## Changes
+
+*0.2.0*
+
+- Adds support for Laravel 4.1.X. This is a hard dependency due to API changes in L4.1
+- Removed the facade for AuthTokenController, must use the full namespace to controller. see [The controller section](#the-controller)
+
 
 ## Pro tip: Using with jQuery
 
