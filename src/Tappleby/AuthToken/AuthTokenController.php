@@ -17,9 +17,15 @@ class AuthTokenController extends Controller {
    */
   protected $driver;
 
-  function __construct(AuthTokenDriver $driver)
+	/**
+	 * @var callable format username and password into hash for Auth::attempt
+	 */
+	protected $credentialsFormatter;
+
+  function __construct(AuthTokenDriver $driver, \Closure $credentialsFormatter)
   {
     $this->driver = $driver;
+	  $this->credentialsFormatter = $credentialsFormatter;
   }
 
   protected function getAuthToken() {
@@ -58,7 +64,8 @@ class AuthTokenController extends Controller {
       throw new NotAuthorizedException();
     }
 
-    $token = $this->driver->attempt(array('email' => $input['username'], 'password' => $input['password']));
+	  $creds = call_user_func($this->credentialsFormatter, $input['username'], $input['password']);
+    $token = $this->driver->attempt($creds);
 
     if(!$token) {
       throw new NotAuthorizedException();
