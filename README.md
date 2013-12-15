@@ -25,6 +25,10 @@ Setup the optional aliases in `app/config/app.php`
 
 	'AuthToken' => 'Tappleby\Support\Facades\AuthToken',
     'AuthTokenNotAuthorizedException' => 'Tappleby\AuthToken\Exceptions\NotAuthorizedException'
+    
+Currently the auth tokens are stored in the database, you will need to run the migrations:
+
+	php artisan migrate --package=tappleby/laravel-auth-token
 
 ### The controller
 
