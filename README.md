@@ -29,6 +29,25 @@ Setup the optional aliases in `app/config/app.php`
 Currently the auth tokens are stored in the database, you will need to run the migrations:
 
 	php artisan migrate --package=tappleby/laravel-auth-token
+	
+##### Optional configuration
+
+This package defaults to using email as the username field to validate against, this can be changed via the package configuration.
+
+1. Publish the configuration `php artisan config:publish tappleby/laravel-auth-token`
+2. Edit the `format_credentials` closure in `app/config/packages/tappleby/laravel-auth-token/config.php`
+
+Example - Only validate active users and check the username column instead of email:
+
+	'format_credentials' => function ($username, $password) {
+		return array(
+			'username' => $username,
+			'password' => $password,
+			'active' => true
+		);
+	}
+
+You can read more about the laravel Auth module here: [Authenticating Users](http://laravel.com/docs/security#authenticating-users)
 
 ### The controller
 
@@ -108,6 +127,7 @@ The `AuthToken::publicToken` method prepares the auth token to be sent to the br
 
 - Adds support for Laravel 4.1.X. This is a hard dependency due to API changes in L4.1
 - Removed the facade for AuthTokenController, must use the full namespace to controller. see [The controller section](#the-controller)
+- Optional configuration for Auth::attempt fields.
 
 
 ## Pro tip: Using with jQuery
