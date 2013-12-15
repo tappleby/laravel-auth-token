@@ -30,7 +30,7 @@ class HashProvider {
   public function make($entropy=null)
   {
     if(empty($entropy)) {
-      $entropy = $this->generateEntryopy();
+      $entropy = $this->generateEntropy();
     }
 
     return hash($this->algo, $entropy);
