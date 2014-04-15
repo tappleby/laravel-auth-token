@@ -20,7 +20,7 @@
     "autoload": {
         "classmap": [
             "src/migrations"
-        ]
+        ],
         "psr-0": {
             "Tappleby\\AuthToken": "src/",
             "Tappleby\\Support": "src/"
