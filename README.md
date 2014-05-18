@@ -56,6 +56,10 @@ A default controller is provided to grant, check and revoke tokens. Add the foll
 	Route::get('auth', 'Tappleby\AuthToken\AuthTokenController@index');
 	Route::post('auth', 'Tappleby\AuthToken\AuthTokenController@store');
 	Route::delete('auth', 'Tappleby\AuthToken\AuthTokenController@destroy');
+	
+If your application requires CORS support you can use:
+
+	Route::options('auth', 'Tappleby\AuthToken\AuthTokenController@index');
 
 ##### Request parameters
 
