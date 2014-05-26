@@ -48,7 +48,7 @@ class AuthTokenController extends Controller {
       throw new NotAuthorizedException();
     }
 
-    return \Response::json($user);
+    return $user;
   }
 
   public function store() {
