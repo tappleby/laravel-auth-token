@@ -92,7 +92,7 @@ An `auth.token` route filter gets registered by the service provider. To protect
 	  });
 	});	 
 	
-### Token valid event
+### Events
 
 The route filter will trigger `auth.token.valid` with the authorized user when a valid auth token is provided. 
 
@@ -100,8 +100,15 @@ The route filter will trigger `auth.token.valid` with the authorized user when a
 	{
 	  //Token is valid, set the user on auth system.
 	  Auth::setUser($user);
-	}); 
-    
+	});
+
+AuthTokenController::store will trigger `auth.token.created` before returning the response.
+
+	Event::listen('auth.token.created', function($user, $token)
+	{
+		$user->load('relation1', 'relation2');
+	});
+
 ### Handling the NotAuthorizedException
 
 Optionally register the `NotAuthorizedException` as alias eg. `AuthTokenNotAuthorizedException`
@@ -126,6 +133,11 @@ Some apps might already be using the traditional laravel based auth. The followi
 The `AuthToken::publicToken` method prepares the auth token to be sent to the browser.
 
 ## Changes
+
+*0.3.0*
+
+- Added `auth.token.created` event which gets triggered before response is returned in AuthTokenController::store
+- AuthTokenController requires the event dispatcher to be passed to constructor.
 
 *0.2.0*
 

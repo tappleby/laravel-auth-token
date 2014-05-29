@@ -7,8 +7,12 @@
 
 namespace Tappleby\AuthToken;
 
+use Illuminate\Events\Dispatcher;
 use Illuminate\Routing\Controller;
 use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
+use Response;
+use Input;
+use Validator;
 
 class AuthTokenController extends Controller {
 
@@ -22,18 +26,24 @@ class AuthTokenController extends Controller {
 	 */
 	protected $credentialsFormatter;
 
-  function __construct(AuthTokenDriver $driver, \Closure $credentialsFormatter)
+	/**
+	 * @var \Illuminate\Events\Dispatcher
+	 */
+	protected $events;
+
+	function __construct(AuthTokenDriver $driver, \Closure $credentialsFormatter, Dispatcher $events)
   {
     $this->driver = $driver;
 	  $this->credentialsFormatter = $credentialsFormatter;
+	  $this->events = $events;
   }
 
   protected function getAuthToken() {
 
-	  $token = \Request::header('X-Auth-Token');
+	  $token = Request::header('X-Auth-Token');
 
 	  if(empty($token)) {
-		  $token = \Input::get('auth_token');
+		  $token = Input::get('auth_token');
 	  }
 
 	  return $token;
@@ -48,14 +58,14 @@ class AuthTokenController extends Controller {
       throw new NotAuthorizedException();
     }
 
-    return \Response::json($user);
+    return Response::json($user);
   }
 
   public function store() {
 
-    $input = \Input::all();
+    $input = Input::all();
 
-    $validator = \Validator::make(
+    $validator = Validator::make(
       $input,
       array('username' => array('required'), 'password' => array('required'))
     );
@@ -71,11 +81,13 @@ class AuthTokenController extends Controller {
       throw new NotAuthorizedException();
     }
 
-    $serializedToken = $this->driver->getProvider()->serializeToken($token);
+	  $user = $this->driver->user($token);
 
-    $user = $this->driver->user($token);
+	  $this->events->fire('auth.token.created', array($user, $token));
+	  $serializedToken = $this->driver->getProvider()->serializeToken($token);
 
-    return \Response::json(array('token' => $serializedToken, 'user' => $user->toArray()));
+
+	  return Response::json(array('token' => $serializedToken, 'user' => $user->toArray()));
   }
 
   public function destroy() {
@@ -88,6 +100,6 @@ class AuthTokenController extends Controller {
 
     $this->driver->getProvider()->purge($user);
 
-    return \Response::json(array('success' => true));
+    return Response::json(array('success' => true));
   }
 }
