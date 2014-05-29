@@ -14,7 +14,7 @@ Add the package to your `composer.json`
 
     "require": {
 		...
-        "tappleby/laravel-auth-token": "0.2.*"
+        "tappleby/laravel-auth-token": "0.3.*"
     }
 
 Add the service provider to `app/config/app.php`
