@@ -67,9 +67,14 @@ abstract class AbstractAuthTokenProvider implements AuthTokenProviderInterface {
    */
   public function serializeToken(AuthToken $token)
   {
-    $payload = array('id' => $token->getAuthIdentifier(), 'key' => $token->getPublicKey());
+    $payload = $this->encrypter->encrypt(array(
+      'id' => $token->getAuthIdentifier(),
+      'key' => $token->getPublicKey())
+    );
 
-    return $this->encrypter->encrypt($payload);
+		$payload = str_replace(array('+', '/', '\r', '\n', '='), array('-', '_'), $payload);
+
+    return $payload;
   }
 
   /**
@@ -80,8 +85,8 @@ abstract class AbstractAuthTokenProvider implements AuthTokenProviderInterface {
    */
   public function deserializeToken($payload)
   {
-
     try {
+      $payload = str_replace(array('-', '_'), array('+', '/'), $payload);
       $data = $this->encrypter->decrypt($payload);
     } catch (DecryptException $e) {
       return null;
