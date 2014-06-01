@@ -57,9 +57,25 @@ A default controller is provided to grant, check and revoke tokens. Add the foll
 	Route::post('auth', 'Tappleby\AuthToken\AuthTokenController@store');
 	Route::delete('auth', 'Tappleby\AuthToken\AuthTokenController@destroy');
 	
-If your application requires CORS support and you are using laravel >= 4.1, you can use the following:
 
-	Route::options('auth', 'Tappleby\AuthToken\AuthTokenController@index');
+### CORS Support
+
+CORS support is not built into this library by default, it can be enabled by using the following package: [barryvdh/laravel-cors](https://github.com/barryvdh/laravel-cors).
+
+The configuration will be specific to how your routing is setup. If you are using the `X-Auth-Token` header, it is important to add this to the `allowedHeaders` configuration. See the package documentation for further configuration details. 
+
+Heres an example using the default `auth` route:
+
+    'paths' => array(
+        'auth' => array(
+            'allowedOrigins' => array('*'),
+            'allowedHeaders' => array('Content-Type', 'X-Auth-Token'),
+            'allowedMethods' => array('POST', 'PUT', 'GET', 'DELETE'),
+            'maxAge' => 3600,
+        )
+    ),
+
+> Note: If you know the list of `allowedOrigins` it might be best to define them explicitly instead of using the wildcard `*`
 
 ##### Request parameters
 
