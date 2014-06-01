@@ -11,6 +11,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Routing\Controller;
 use Tappleby\AuthToken\Exceptions\NotAuthorizedException;
 use Response;
+use Request;
 use Input;
 use Validator;
 
