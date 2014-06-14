@@ -14,6 +14,7 @@ use Response;
 use Request;
 use Input;
 use Validator;
+use Config;
 
 class AuthTokenController extends Controller {
 
