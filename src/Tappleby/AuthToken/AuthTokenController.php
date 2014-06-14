@@ -67,15 +67,18 @@ class AuthTokenController extends Controller {
     $input = Input::all();
 
     $validator = Validator::make(
-      $input,
-      array('username' => array('required'), 'password' => array('required'))
-    );
+            $input,
+            array(
+                Config::get('laravel-auth-token::login_credential')    => Config::get('laravel-auth-token::login_credential_rules'),
+                Config::get('laravel-auth-token::password_credential') => Config::get('laravel-auth-token::password_credential_rules'),
+            )
+        );
 
     if($validator->fails()) {
       throw new NotAuthorizedException();
     }
 
-	  $creds = call_user_func($this->credentialsFormatter, $input['username'], $input['password']);
+    $creds = call_user_func($this->credentialsFormatter, $input[Config::get('laravel-auth-token::login_credential')], $input[Config::get('laravel-auth-token::password_credential')]);
     $token = $this->driver->attempt($creds);
 
     if(!$token) {
