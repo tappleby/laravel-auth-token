@@ -27,7 +27,7 @@ class AuthTokenManager extends Manager {
     return new DatabaseAuthTokenProvider($connection, 'ta_auth_tokens', $encrypter, $hasher);
   }
 
-  protected function getDefaultDriver() {
+  public function getDefaultDriver() {
     return 'database';
   }
 }
