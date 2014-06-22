@@ -125,6 +125,8 @@ AuthTokenController::store will trigger `auth.token.created` before returning th
 		$user->load('relation1', 'relation2');
 	});
 
+AuthTokenController::destroy will trigger `auth.token.deleted` before returning the response.
+
 ### Handling the NotAuthorizedException
 
 Optionally register the `NotAuthorizedException` as alias eg. `AuthTokenNotAuthorizedException`
