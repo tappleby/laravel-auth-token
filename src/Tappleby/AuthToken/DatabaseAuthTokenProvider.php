@@ -10,6 +10,7 @@ namespace Tappleby\AuthToken;
 use \Illuminate\Auth\UserInterface;
 use \Illuminate\Database\Connection;
 use Illuminate\Encryption\Encrypter;
+use Session;
 
 class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
 
@@ -65,7 +66,9 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
 
     $t = new \DateTime;
     $insertData = array_merge($token->toArray(), array(
-       'created_at' => $t, 'updated_at' => $t
+       'session_id' => Session::getId(),
+       'created_at' => $t,
+       'updated_at' => $t
     ));
 
     $this->db()->insert($insertData);
@@ -114,7 +117,7 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
       $identifier = $identifier->getAuthIdentifier();
     }
 
-    $res = $this->db()->where('auth_identifier', $identifier)->delete();
+    $res = $this->db()->where('auth_identifier', $identifier)->where('session_id', Session::getId())->delete();
 
     return $res > 0;
   }
