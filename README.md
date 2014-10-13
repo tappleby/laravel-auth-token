@@ -10,7 +10,7 @@ Upgrading to Laravel 4.1?, see the [breaking changes](#changes)
 
 ### Setup
 
-Add the package to your `composer.json`
+Add the package to your `composer.json`, run a `composer update`
 
     "require": {
 		...
