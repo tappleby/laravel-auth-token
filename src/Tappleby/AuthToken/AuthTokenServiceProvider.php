@@ -42,9 +42,10 @@ class AuthTokenServiceProvider extends ServiceProvider
 		$app->bind('Tappleby\AuthToken\AuthTokenController', function ($app) {
 			$driver = $app['tappleby.auth.token']->driver();
 			$credsFormatter = $app['config']->get('laravel-auth-token::format_credentials', null);
+			$maxSimLogins = $app['config']->get('laravel-auth-token::max_simaltaneous_logins', 1);
 			$events = $app['events'];
 
-      return new AuthTokenController($driver, $credsFormatter, $events);
+      return new AuthTokenController($driver, $credsFormatter, $events, $maxSimLogins);
 		});
 	}
 

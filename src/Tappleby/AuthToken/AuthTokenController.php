@@ -31,12 +31,14 @@ class AuthTokenController extends Controller {
 	 * @var \Illuminate\Events\Dispatcher
 	 */
 	protected $events;
+  public static $maxSimLogins;
 
-	function __construct(AuthTokenDriver $driver, \Closure $credentialsFormatter, Dispatcher $events)
+  function __construct(AuthTokenDriver $driver, \Closure $credentialsFormatter, Dispatcher $events, $maxSimLogins)
   {
     $this->driver = $driver;
-	  $this->credentialsFormatter = $credentialsFormatter;
-	  $this->events = $events;
+    $this->credentialsFormatter = $credentialsFormatter;
+    $this->events = $events;
+    self::$maxSimLogins = $maxSimLogins;
   }
 
   protected function getAuthToken() {

@@ -12,5 +12,6 @@ return array(
 			'email' => $username,
 			'password' => $password
 		);
-	}
+	},
+	'max_simaltaneous_logins' => 3
 );

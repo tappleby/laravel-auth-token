@@ -114,8 +114,24 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
       $identifier = $identifier->getAuthIdentifier();
     }
 
-    $res = $this->db()->where('auth_identifier', $identifier)->delete();
+    $toDelete = $this->db()->where('auth_identifier', $identifier)
+                      ->orderBy('created_at', 'DSC')
+                      ->skip(AuthTokenController::$maxSimLogins - 1)
+                      ->take(999999999999) // limit of table?
+                      ->get();
+    
+    if (count($toDelete) > 0) {
+      foreach ($toDelete as $key => $authToken) {
+        $this->db()
+              ->where('auth_identifier', $authToken->auth_identifier)
+              ->where('public_key', $authToken->public_key)
+              ->where('private_key', $authToken->private_key)
+              ->delete();
+      }
+    } else {
+      return  0;
+    }
 
-    return $res > 0;
+    return 1;
   }
 }
