@@ -54,7 +54,7 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
    * @param \Illuminate\Auth\UserInterface $user
    * @return \TAppleby\AuthToken\AuthToken|false
    */
-  public function create(UserInterface $user)
+  public function create(UserInterface $user,$deviceIdentifier=null)
   {
     if($user == null || $user->getAuthIdentifier() == null) {
       return false;
@@ -65,7 +65,7 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
 
     $t = new \DateTime;
     $insertData = array_merge($token->toArray(), array(
-       'created_at' => $t, 'updated_at' => $t
+       'created_at' => $t, 'updated_at' => $t,'device_identifier'=>$deviceIdentifier
     ));
 
     $this->db()->insert($insertData);
@@ -108,13 +108,15 @@ class DatabaseAuthTokenProvider extends AbstractAuthTokenProvider {
    * @param mixed|\Illuminate\Auth\UserInterface $identifier
    * @return bool
    */
-  public function purge($identifier)
+  public function purge($identifier,$deviceIdentifier=null)
   {
     if($identifier instanceof UserInterface) {
       $identifier = $identifier->getAuthIdentifier();
     }
 
-    $res = $this->db()->where('auth_identifier', $identifier)->delete();
+      $query = $this->db()->where('auth_identifier', $identifier);
+      $query=$query->where('device_identifier',$deviceIdentifier);
+      $res = $query->delete();
 
     return $res > 0;
   }
