@@ -41,7 +41,7 @@ class AuthTokenController extends Controller {
 
   protected function getAuthToken() {
 
-	  $token = Request::header('X-Auth-Token');
+	  $token = \Request::header('X-Auth-Token');
 
 	  if(empty($token)) {
 		  $token = Input::get('auth_token');
