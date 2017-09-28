@@ -10,12 +10,11 @@ Upgrading to Laravel 4.1?, see the [breaking changes](#changes)
 
 ### Setup
 
-Add the package to your `composer.json`, run a `composer update`
+Use [composer](http://getcomposer.org) to install this package.
 
-    "require": {
-		...
-        "tappleby/laravel-auth-token": "0.3.*"
-    }
+```
+$ composer require tappleby/laravel-auth-token:0.3.*
+```
 
 Add the service provider to `app/config/app.php`
 
