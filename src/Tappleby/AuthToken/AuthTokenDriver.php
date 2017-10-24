@@ -72,11 +72,11 @@ class AuthTokenDriver {
    * @param array $credentials
    * @return bool|AuthToken
    */
-  public function attempt(array $credentials) {
+  public function attempt(array $credentials,$deviceIdentifier=null) {
     $user = $this->users->retrieveByCredentials($credentials);
 
     if($user instanceof UserInterface && $this->users->validateCredentials($user, $credentials)) {
-       return $this->create($user);
+       return $this->create($user,$deviceIdentifier);
     }
 
     return false;
@@ -88,9 +88,9 @@ class AuthTokenDriver {
    * @param UserInterface $user
    * @return bool|AuthToken
    */
-  public function create(UserInterface $user) {
-    $this->tokens->purge($user);
-    return $this->tokens->create($user);
+  public function create(UserInterface $user,$deviceIdentifier=null) {
+    $this->tokens->purge($user,$deviceIdentifier);
+    return $this->tokens->create($user,$deviceIdentifier);
   }
 
   /**
@@ -111,5 +111,8 @@ class AuthTokenDriver {
    */
   public function publicToken(AuthToken $token) {
     return $this->tokens->serializeToken($token);
+  }
+  function load($user){
+
   }
 }

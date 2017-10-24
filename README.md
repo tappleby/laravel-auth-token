@@ -1,3 +1,4 @@
+adding multiple login to auth token library
 # Laravel 4 Auth token
 
 Hooks into the laravel auth module and provides an auth token upon success. This token is really only secure in https environment. This main purpose for this module was to provide an auth token to javascript web app which could be used to identify users on api calls.

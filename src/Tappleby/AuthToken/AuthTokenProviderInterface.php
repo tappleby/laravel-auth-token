@@ -25,7 +25,7 @@ interface AuthTokenProviderInterface {
    * @param \Illuminate\Auth\UserInterface $user
    * @return \TAppleby\AuthToken\AuthToken|false
    */
-  public function create(UserInterface $user);
+  public function create(UserInterface $user,$deviceIdentifier=null);
 
 
   /**

@@ -165,10 +165,11 @@ class DatabaseAuthTokenProviderTest extends PHPUnit_Framework_TestCase {
     $provider = $this->getProvider( $enc );
 
     $provider->getConnection()->shouldReceive('table')->once()->with('table')->andReturn($query = m::mock('StdClass'));
-    $query->shouldReceive('where')->once()->with('auth_identifier', 1)->andReturn($query);
+    $query->shouldReceive('where')->once()->ordered()->withArgs(['auth_identifier', 1])->andReturn($query);
+    $query->shouldReceive('where')->once()->ordered()->withArgs(['device_identifier', 'android 1'])->andReturn($query);
     $query->shouldReceive('delete')->once()->andReturn(0);
 
-    $provider->purge( $user );
+    $provider->purge( $user,'android 1' );
   }
 
   public function testPurgeReturnsFalseWhenNoTokensDeleted() {
@@ -176,10 +177,11 @@ class DatabaseAuthTokenProviderTest extends PHPUnit_Framework_TestCase {
     $provider = $this->getProvider( $enc );
 
     $provider->getConnection()->shouldReceive('table')->once()->with('table')->andReturn($query = m::mock('StdClass'));
-    $query->shouldReceive('where')->once()->with('auth_identifier', 1)->andReturn($query);
+    $query->shouldReceive('where')->once()->ordered()->withArgs(['auth_identifier', 1])->andReturn($query);
+    $query->shouldReceive('where')->once()->ordered()->withArgs(['device_identifier', 'android 1'])->andReturn($query);
     $query->shouldReceive('delete')->once()->andReturn(0);
 
-    $this->assertFalse( $provider->purge(1) );
+    $this->assertFalse( $provider->purge(1,'android 1') );
   }
 
   public function testPurgeReturnsTrueWhenTokensDeleted() {
@@ -187,9 +189,10 @@ class DatabaseAuthTokenProviderTest extends PHPUnit_Framework_TestCase {
     $provider = $this->getProvider( $enc );
 
     $provider->getConnection()->shouldReceive('table')->once()->with('table')->andReturn($query = m::mock('StdClass'));
-    $query->shouldReceive('where')->once()->with('auth_identifier', 1)->andReturn($query);
+    $query->shouldReceive('where')->once()->ordered()->withArgs(['auth_identifier', 1])->andReturn($query);
+    $query->shouldReceive('where')->once()->ordered()->withArgs(['device_identifier', 'android 1'])->andReturn($query);
     $query->shouldReceive('delete')->once()->andReturn(5);
 
-    $this->assertTrue( $provider->purge(1) );
+    $this->assertTrue( $provider->purge(1,'android 1') );
   }
 }
