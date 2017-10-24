@@ -12,5 +12,14 @@ return array(
 			'email' => $username,
 			'password' => $password
 		);
-	}
+	},
+	/**
+	 * Transforms login and password into fields that are received via POST
+	 *
+	 * Rules are also specified
+	 */
+	'login_credential'            => 'username',
+    'login_credential_rules'      => array('required'),
+    'password_credential'         => 'password',
+    'password_credential_rules'   => array('required'),
 );
